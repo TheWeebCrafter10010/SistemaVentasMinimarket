@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexionSQlite {
-    private static final String RUTA_DB = "jdbc:sqlite:database/estacionamiento.db";
+    private static final String RUTA_DB = "jdbc:sqlite:database/db.db";
 
     private static Connection conexion;
 

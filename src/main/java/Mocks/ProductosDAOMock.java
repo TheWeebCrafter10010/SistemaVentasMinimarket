@@ -45,8 +45,9 @@ public class ProductosDAOMock implements IProductosDAO {
     }
 
     @Override
-    public void insertarProducto(Producto producto) {
+    public int insertarProducto(Producto producto) {
         productos.add(producto);
+        return productos.size()-1; // Retorna el ID generado (índice en la lista)
     }
 
     @Override

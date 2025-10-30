@@ -36,7 +36,6 @@ public class VentasServicio {
             detalleVenta.add(detalle);
             return true;
         }
-        System.out.println("Cantidad solicitada excede el stock disponible.");
         return  false;
 
     }
@@ -50,12 +49,17 @@ public class VentasServicio {
         return false;
     }
 
-    public Venta generarVenta(List<DetalleVenta> detallesVenta){
+    public Venta generarVenta(List<DetalleVenta> detallesVenta, int idCliente) {
 
         LocalDateTime fecha = LocalDateTime.now();
         String fechaFormateada = fecha.format(formatter);
 
-        Venta nuevaVenta = new Venta(fecha,fechaFormateada,detallesVenta);
+        double totalVenta = 0.0;
+        for (DetalleVenta detalle : detallesVenta) {
+            totalVenta += detalle.getTotalDetalleVenta();
+        }
+
+        Venta nuevaVenta = new Venta(fecha, fechaFormateada, detallesVenta, totalVenta, idCliente);
         ventasDAO.insertarVenta(nuevaVenta);
         actualizarStockProductos(nuevaVenta);
         return ventasDAO.obtenerUltimaVenta();

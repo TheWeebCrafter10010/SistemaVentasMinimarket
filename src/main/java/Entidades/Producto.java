@@ -5,7 +5,6 @@ public class Producto {
     private String nombre;
     private double precio;
     private int stock;
-    private String proveedor;
     private String imgURL;
 
     public Producto(int ID, String nombre, double precio, int stock) {
@@ -35,9 +34,6 @@ public class Producto {
         this.stock = stock;
     }
 
-    public String getProveedor() {
-        return proveedor;
-    }
 
     public String getImgURL() {
         return imgURL;

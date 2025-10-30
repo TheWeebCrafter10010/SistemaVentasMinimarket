@@ -10,7 +10,8 @@ public interface IProductosDAO {
 
     List<Producto> obtenerProductosPorNombre(String cadenaNombre); // Búsqueda parcial por nombre
 
-    void insertarProducto(Producto producto);//Insertar nuevo producto
+    //Insertar nuevo producto, dvuelve el ID generado
+    int insertarProducto(Producto producto);
 
     void actualizarProducto(Producto producto);
 

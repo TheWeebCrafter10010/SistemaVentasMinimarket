@@ -12,14 +12,16 @@ public class Venta {
     private String fechaConFormato;
     private List<DetalleVenta> productosVendidos;
     private double totalVenta;
+    private int idCliente;
 
-    public Venta(LocalDateTime fecha,String fechaConFormato, List<DetalleVenta> productosVendidos) {
+    public Venta(LocalDateTime fecha,String fechaConFormato, List<DetalleVenta> productosVendidos, double totalVenta, int idCliente) {
         //Constructor para crear Venta y colocarla en BD
         //ID se asigna automaticamente en la BD
         this.fecha = fecha;
         this.productosVendidos = productosVendidos;
         this.fechaConFormato = fechaConFormato;
-        calcularTotal();
+        this.idCliente = idCliente;
+        this.totalVenta = totalVenta;
     }
 
     public Venta(int id, LocalDateTime fecha, String fechaConFormato, List<DetalleVenta> productosVendidos, double totalVenta) {
@@ -31,13 +33,6 @@ public class Venta {
         this.totalVenta = totalVenta;
     }
 
-    private void calcularTotal() {
-        double total = 0;
-        for (DetalleVenta detalle : productosVendidos) {
-            total += detalle.getTotal();
-        }
-        this.totalVenta = total;
-    }
 
     public double getTotal() {
         return this.totalVenta;
