@@ -14,6 +14,15 @@ public class Venta {
     private double totalVenta;
     private int idCliente;
 
+    public Venta(Builder builder) {
+        this.id = builder.id;
+        this.fecha = builder.fecha;
+        this.fechaConFormato = builder.fechaConFormato;
+        this.productosVendidos = builder.productosVendidos;
+        this.totalVenta = builder.totalVenta;
+        this.idCliente = builder.idCliente;
+    }
+
     public Venta(LocalDateTime fecha,String fechaConFormato, List<DetalleVenta> productosVendidos, double totalVenta, int idCliente) {
         //Constructor para crear Venta y colocarla en BD
         //ID se asigna automaticamente en la BD
@@ -50,6 +59,7 @@ public class Venta {
         return productosVendidos;
     }
 
+
     public void setId(int id) {//SOLO PARA PRUEBAS
         this.id = id;
     }
@@ -68,5 +78,48 @@ public class Venta {
 
         sb.append("]}");
         return sb.toString();
+    }
+
+    public static class Builder {
+        private int id;
+        private LocalDateTime fecha;
+        private String fechaConFormato;
+        private List<DetalleVenta> productosVendidos;
+        private double totalVenta;
+        private int idCliente;
+
+        public Builder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setFecha(LocalDateTime fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public Builder setFechaConFormato(String fechaConFormato) {
+            this.fechaConFormato = fechaConFormato;
+            return this;
+        }
+
+        public Builder setProductosVendidos(List<DetalleVenta> productosVendidos) {
+            this.productosVendidos = productosVendidos;
+            return this;
+        }
+
+        public Builder setTotalVenta(double totalVenta) {
+            this.totalVenta = totalVenta;
+            return this;
+        }
+
+        public Builder setIdCliente(int idCliente) {
+            this.idCliente = idCliente;
+            return this;
+        }
+
+        public Venta build() {
+            return new Venta(this);
+        }
     }
 }

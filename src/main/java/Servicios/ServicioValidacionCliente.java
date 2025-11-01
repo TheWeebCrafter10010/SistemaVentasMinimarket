@@ -42,7 +42,7 @@ public class ServicioValidacionCliente {
 
     public boolean verificarEmailUnico(String email) {
         //Verificar que el email no exista en la base de datos
-        boolean clienteExistente = clienteDAO.existeClientePorEmail(email);
+        boolean clienteExistente = clienteDAO.emailYaRegistrado(email);
         return !clienteExistente;
     }
 

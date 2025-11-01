@@ -30,7 +30,7 @@ public class ClienteDAOMock implements IClienteDAO {
     }
 
     @Override
-    public boolean existeClientePorEmail(String email) {
+    public boolean emailYaRegistrado(String email) {
         for (Cliente c : clientes) {
             if (c.getEmail().equalsIgnoreCase(email)) {
                 return true;
@@ -49,6 +49,7 @@ public class ClienteDAOMock implements IClienteDAO {
     public List<Cliente> obtenerClientes(int limite) {
         if (limite <= 0 || limite >= clientes.size()) {
             return new ArrayList<>(clientes);
+            // Retorna todos los clientes si el límite es inválido o mayor que el tamaño de la lista
         }
         return new ArrayList<>(clientes.subList(0, limite));
     }

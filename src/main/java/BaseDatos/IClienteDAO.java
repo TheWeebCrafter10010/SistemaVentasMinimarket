@@ -7,7 +7,7 @@ public interface IClienteDAO {
 
     Cliente obtenerClienteLogin(String email,String pwd);
 
-    boolean existeClientePorEmail(String email);
+    boolean emailYaRegistrado(String email);
 
     void insertarNuevoCliente(Cliente cliente);
 

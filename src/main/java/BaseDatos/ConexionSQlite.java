@@ -35,4 +35,8 @@ public class ConexionSQlite {
 
         }
     }
+
+    public static boolean isConnected(){
+        return conexion!=null;
+    }
 }
