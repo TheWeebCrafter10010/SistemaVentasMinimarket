@@ -1,15 +1,15 @@
 package BaseDatos;
-import Entidades.Cliente;
 
+import Entidades.Cliente;
 import java.util.List;
 
 public interface IClienteDAO {
 
-    Cliente obtenerClienteLogin(String email,String pwd);
+    Cliente obtenerClienteLogin(String email, String pwd);
 
     boolean emailYaRegistrado(String email);
 
-    void insertarNuevoCliente(Cliente cliente);
+    boolean insertarCliente(Cliente cliente); // ✅ cambio aquí
 
-    List<Cliente> obtenerClientes(int limite);//Limite de clientes a obtener
+    List<Cliente> obtenerClientes(int limite);
 }

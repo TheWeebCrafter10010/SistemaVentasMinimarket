@@ -71,6 +71,35 @@ public class Cliente {
     public String getTelefono() {
         return telefono;
     }
+    public String getDireccion() {
+    return direccion;
+}
+        // 🔹 Setters necesarios para registro de clientes
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+
 
     public List<Venta> getCompras() {
         return compras;

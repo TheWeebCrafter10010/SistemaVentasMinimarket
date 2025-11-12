@@ -40,10 +40,12 @@ public class ClienteDAOMock implements IClienteDAO {
     }
 
     @Override
-    public void insertarNuevoCliente(Cliente cliente) {
-        cliente.setId(idCounter++); // Asignar ID automáticamente
-        clientes.add(cliente);
-    }
+public boolean insertarCliente(Cliente cliente) {
+    cliente.setId(idCounter++);
+    clientes.add(cliente);
+    return true;
+}
+
 
     @Override
     public List<Cliente> obtenerClientes(int limite) {

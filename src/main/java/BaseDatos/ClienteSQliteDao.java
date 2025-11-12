@@ -52,7 +52,7 @@ public class ClienteSQliteDao implements IClienteDAO{
 
         return null;
     }
-
+    
     @Override
     public boolean emailYaRegistrado(String email) {
         try {
@@ -68,10 +68,25 @@ public class ClienteSQliteDao implements IClienteDAO{
     }
 
     @Override
-    public void insertarNuevoCliente(Cliente cliente) {
+public boolean insertarCliente(Cliente cliente) {
+    String sql = "INSERT INTO Cliente (nombre, apellido, email, password, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)";
+    try (Connection conn = ConexionSQlite.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+        stmt.setString(1, cliente.getNombre());
+        stmt.setString(2, cliente.getApellido());
+        stmt.setString(3, cliente.getEmail());
+        stmt.setString(4, cliente.getPwd());
+        stmt.setString(5, cliente.getTelefono());
+        stmt.setString(6, cliente.getDireccion());
+
+        stmt.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        System.out.println("Error al insertar cliente: " + e.getMessage());
+        return false;
     }
-
+}
     @Override
     public List<Cliente> obtenerClientes(int limite) {
         //EL ADMIN PUEDE USAR ESTE METODO PARA VISUALIZAR LOS CLIENTES REGISTRADOS EN LA PLATAFORMA

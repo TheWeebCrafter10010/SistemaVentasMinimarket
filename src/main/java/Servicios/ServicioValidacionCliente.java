@@ -49,6 +49,6 @@ public class ServicioValidacionCliente {
     public void registrarNuevoCliente(Cliente cliente) {
         //Registrar un nuevo cliente en la base de datos
         //Usar despues de haber hecho todas las validaciones necesarias
-        clienteDAO.insertarNuevoCliente(cliente);
+        clienteDAO.insertarCliente(cliente);
     }
 }
