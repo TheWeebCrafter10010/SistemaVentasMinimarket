@@ -59,7 +59,7 @@ private void cargarTablaClientes() {
         }
         try {
             int id = Integer.parseInt(texto);
-            Producto producto = productoDAO.obtenerProductoPorId(id);
+            Producto producto = productoDAO.obtenerProductoPorID(id);
             if (producto != null) {
                 DefaultTableModel model = new DefaultTableModel(
                         new Object[]{"ID", "Nombre", "Precio", "Stock"}, 0
@@ -75,12 +75,16 @@ private void cargarTablaClientes() {
     }
      private void buscarCliente() {
         String texto = txtBuscarCliente.getText().trim();
+        //Agregar despues, por mientras sera buscar un limite de clientes
+        
         if (texto.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese un email o nombre para buscar.");
             return;
         }
+        
+        int limite = Integer.parseInt(texto);
 
-        List<Cliente> resultados = clienteDAO.buscarClientes(texto);
+        List<Cliente> resultados = clienteDAO.obtenerClientes(limite);
         DefaultTableModel model = new DefaultTableModel(
                 new Object[]{"ID", "Nombre", "Email", "Teléfono"}, 0
         );
@@ -96,7 +100,7 @@ private void cargarTablaClientes() {
             return;
         }
         int id = (int) tablaProductos.getValueAt(fila, 0);
-        productoDAO.eliminarProducto(id);
+        //productoDAO.eliminarProducto(id);
         cargarTablaProductos();
         JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
     }
@@ -107,7 +111,7 @@ private void cargarTablaClientes() {
             return;
         }
         int id = (int) tablaClientes.getValueAt(fila, 0);
-        clienteDAO.eliminarCliente(id);
+        //clienteDAO.eliminarCliente(id);
         cargarTablaClientes();
         JOptionPane.showMessageDialog(this, "Cliente eliminado correctamente.");
     }
@@ -428,7 +432,8 @@ private void cargarTablaClientes() {
                 "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             this.dispose();
-            new LoginFrame().setVisible(true);
+            //Cambiar lo de abajo
+            //new LoginFrame().setVisible(true);
         }
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 

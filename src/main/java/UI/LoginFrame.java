@@ -4,15 +4,18 @@
  */
 package UI;
 
-import BaseDatos.ClienteSQliteDao;
+import BaseDatos.*;
 import Entidades.Cliente;
 import javax.swing.JOptionPane;
 
 public class LoginFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginFrame.class.getName());
+    
+    private IClienteDAO clienteDao;
 
-    public LoginFrame() {
+    public LoginFrame(IClienteDAO clienteDao) {
+        this.clienteDao = clienteDao;
         initComponents();
         comboRol.removeAllItems();
         comboRol.addItem("Comprador");
@@ -39,6 +42,11 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel1.setText("Correo :");
 
         txtEmail.setText("@gmail.com");
+        txtEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEmailActionPerformed(evt);
+            }
+        });
 
         txtPassword.setText("jPasswordField1");
 
@@ -62,7 +70,7 @@ public class LoginFrame extends javax.swing.JFrame {
         btnRegistro.setBackground(new java.awt.Color(0, 0, 0));
         btnRegistro.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         btnRegistro.setForeground(new java.awt.Color(0, 255, 204));
-        btnRegistro.setText("Resgistrarse");
+        btnRegistro.setText("Registrarse");
         btnRegistro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistroActionPerformed(evt);
@@ -102,7 +110,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(186, 186, 186)
                         .addComponent(comboRol, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +143,6 @@ public class LoginFrame extends javax.swing.JFrame {
         String rol = comboRol.getSelectedItem().toString();
 
         if (rol.equals("Comprador")) {
-            ClienteSQliteDao clienteDao = new ClienteSQliteDao();
             Cliente cliente = clienteDao.obtenerClienteLogin(email, password);
             if (cliente != null) {
                 JOptionPane.showMessageDialog(this, "Bienvenido " + cliente.getNombre());
@@ -164,15 +171,20 @@ public class LoginFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_comboRolActionPerformed
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
-        RegistroClienteFrame reg = new RegistroClienteFrame();
+        RegistroClienteFrame reg = new RegistroClienteFrame(clienteDao);
         reg.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegistroActionPerformed
 
+    private void txtEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEmailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEmailActionPerformed
+
     public static void main(String args[]) {
+        /*
         java.awt.EventQueue.invokeLater(() -> {
             new LoginFrame().setVisible(true);
-        });
+        });*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

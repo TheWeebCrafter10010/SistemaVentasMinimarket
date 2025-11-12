@@ -1,17 +1,19 @@
 package UI;
 
-import BaseDatos.ClienteSQliteDao;
+import BaseDatos.IClienteDAO;
 import Entidades.Cliente;
 import javax.swing.JOptionPane;
 
 public class RegistroClienteFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistroClienteFrame.class.getName());
-
+    
+    private IClienteDAO clienteDao;
     /**
      * Creates new form RegistroClienteFrom
      */
-    public RegistroClienteFrame() {
+    public RegistroClienteFrame(IClienteDAO clienteDao) {
+        this.clienteDao = clienteDao;
         initComponents();
     }
 
@@ -185,6 +187,9 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        
+        //var servicioValidacion = new ServicioRegistroClienteFacade()
+        
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String email = txtEmail.getText().trim();
@@ -206,12 +211,11 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
         cliente.setTelefono(telefono);
         cliente.setDireccion(direccion);
 
-        ClienteSQliteDao dao = new ClienteSQliteDao();
-        boolean registrado = dao.insertarCliente(cliente);
+        boolean registrado = clienteDao.insertarCliente(cliente);
 
         if (registrado) {
             JOptionPane.showMessageDialog(this, "Registro exitoso.");
-            new LoginFrame().setVisible(true);
+            new LoginFrame(clienteDao).setVisible(true);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error al registrar. Verifique los datos.");
@@ -220,7 +224,7 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        new LoginFrame().setVisible(true);
+        new LoginFrame(clienteDao).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
@@ -250,7 +254,7 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new RegistroClienteFrame().setVisible(true));
+        //java.awt.EventQueue.invokeLater(() -> new RegistroClienteFrame().setVisible(true)); //de momento este no xd
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
