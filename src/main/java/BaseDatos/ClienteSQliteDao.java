@@ -32,7 +32,7 @@ public class ClienteSQliteDao implements IClienteDAO{
 
             if (rs.next()) {
                 int idCliente = rs.getInt("id_cli");
-                return new Cliente.Builder()
+                Cliente nuevoCliente = new Cliente.Builder()
                         .setId(idCliente)
                         .setNombre(rs.getString("nombre"))
                         .setApellido(rs.getString("apellido"))
@@ -40,8 +40,11 @@ public class ClienteSQliteDao implements IClienteDAO{
                         .setPwd(rs.getString("password"))
                         .setTelefono(rs.getString("telefono"))
                         .setDireccion(rs.getString("direccion"))
-                        .setCompras(obtenerComprasCliente(idCliente))
-                        .build();
+                        .buildCliente();
+                
+                nuevoCliente.setCompras(obtenerComprasCliente(idCliente));
+                return nuevoCliente;
+                
             }
             rs.close();
             pstmt.close();
@@ -104,7 +107,7 @@ public class ClienteSQliteDao implements IClienteDAO{
                         .setNombre(rs.getString("nombre"))
                         .setApellido(rs.getString("apellido"))
                         .setEmail(rs.getString("email"))
-                        .build();
+                        .buildCliente();
                 clientes.add(cliente);
             }
             rs.close();

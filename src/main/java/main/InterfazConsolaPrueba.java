@@ -104,7 +104,13 @@ public class InterfazConsolaPrueba {
         System.out.println("Ingrese teléfono:");
         String telefono = sc.nextLine();
 
-        Cliente nuevoCliente = new Cliente(nombre,apellido,email,pwd,telefono);
+        Cliente nuevoCliente = new Cliente.Builder()
+                                    .setNombre(nombre)
+                                    .setApellido(apellido)
+                                    .setEmail(email)
+                                    .setPwd(pwd)
+                                    .setTelefono(telefono)
+                                    .buildCliente();
 
         ValidacionRegistro valido = servicioRegistroCliente.validarCampos(nuevoCliente);
 

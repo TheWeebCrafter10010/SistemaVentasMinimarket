@@ -2,6 +2,7 @@ package Mocks;
 
 import BaseDatos.IClienteDAO;
 import Entidades.Cliente;
+import Entidades.Venta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,27 @@ public class ClienteDAOMock implements IClienteDAO {
         clientes = new ArrayList<>();
 
         // Datos de ejemplo iniciales
-        clientes.add(new Cliente(idCounter++, "Alonso", "Benito", "alonso123@gmail.com", "123456", "999888777", new ArrayList<>()));
-        clientes.add(new Cliente(idCounter++, "Bryan", "Torres", "bryan@gmail.com", "abcdef", "988776655", new ArrayList<>()));
+        Cliente c1 = new Cliente.Builder()
+                    .setId(idCounter++)
+                    .setNombre("Alonso")
+                    .setApellido("Benito")
+                    .setEmail("alonso123@gmail.com")
+                    .setPwd("123456")
+                    .setTelefono("999888777")
+                    .buildCliente();
+        c1.setCompras(new ArrayList<Venta>());
+
+        Cliente c2 = new Cliente.Builder()
+                .setId(idCounter++)
+                .setNombre("Bryan")
+                .setApellido("Torres")
+                .setEmail("bryan@gmail.com")
+                .setPwd("abcdef")
+                .setTelefono("988776655")
+                .buildCliente();
+        c2.setCompras(new ArrayList<Venta>());
+        clientes.add(c1);
+        clientes.add(c2);
     }
 
     @Override

@@ -229,8 +229,8 @@ public class CompradorMain extends javax.swing.JFrame {
 
     java.awt.EventQueue.invokeLater(() -> {
         // 🔹 Crear un cliente de prueba (solo para ejecutar esta ventana directamente)
-        Entidades.Cliente clienteDemo = new Cliente("Cliente", "Demo", "demo@gmail.com", "1234", "999999999");
-        new CompradorMain(clienteDemo).setVisible(true);
+        //Entidades.Cliente clienteDemo = new Cliente("Cliente", "Demo", "demo@gmail.com", "1234", "999999999");
+        //new CompradorMain(clienteDemo).setVisible(true);
     });
 }
 

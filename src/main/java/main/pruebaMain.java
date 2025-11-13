@@ -2,6 +2,7 @@ package main;
 
 import BaseDatos.*;
 import Entidades.Cliente;
+import Entidades.*;
 import Entidades.Venta;
 import Mocks.*;
 import Servicios.*;
@@ -19,7 +20,7 @@ public class pruebaMain {
 //        VentasServicio ventasServicio = new VentasServicio(ventasDAO, new DetalleVentaServicio(), productosDAO);
 //        InterfazConsolaPrueba interfaz =
 //                new InterfazConsolaPrueba(productosDAO, ventasServicio,servicioRegistroCliente, servicioLoginCliente);
-//
+
 //        interfaz.registroPrueba();
 //        interfaz.loginPrueba();
 
@@ -27,9 +28,6 @@ public class pruebaMain {
 
         Cliente cliente = clienteSQliteDao.obtenerClienteLogin("alonso123@gmail.com","holamundo");
         System.out.println(cliente);
-        for(Venta venta : cliente.getCompras()){
-            System.out.println(venta);
-        }
-
+            
     }
 }

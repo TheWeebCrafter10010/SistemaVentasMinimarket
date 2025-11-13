@@ -203,13 +203,14 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
             return;
         }
 
-        Cliente cliente = new Cliente();
-        cliente.setNombre(nombre);
-        cliente.setApellido(apellido);
-        cliente.setEmail(email);
-        cliente.setPwd(password); 
-        cliente.setTelefono(telefono);
-        cliente.setDireccion(direccion);
+        Cliente cliente = new Cliente.Builder()
+                .setNombre(nombre)
+                .setApellido(apellido)
+                .setEmail(email)
+                .setPwd(password)
+                .setTelefono(telefono)
+                .setDireccion(direccion)
+                .buildCliente();
 
         boolean registrado = clienteDao.insertarCliente(cliente);
 
