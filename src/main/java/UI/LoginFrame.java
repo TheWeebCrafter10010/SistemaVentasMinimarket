@@ -12,9 +12,9 @@ public class LoginFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginFrame.class.getName());
     
-    private IClienteDAO clienteDao;
+    private IUsuarioDAO clienteDao;
 
-    public LoginFrame(IClienteDAO clienteDao) {
+    public LoginFrame(IUsuarioDAO clienteDao) {
         this.clienteDao = clienteDao;
         initComponents();
         comboRol.removeAllItems();
@@ -138,12 +138,13 @@ public class LoginFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        //CAMBIAR METODO
         String email = txtEmail.getText().trim();
         String password = new String(txtPassword.getPassword());
         String rol = comboRol.getSelectedItem().toString();
 
         if (rol.equals("Comprador")) {
-            Cliente cliente = clienteDao.obtenerClienteLogin(email, password);
+            Cliente cliente = (Cliente)clienteDao.obtenerUsuarioLogin(email, password);//DE MOMENTO
             if (cliente != null) {
                 JOptionPane.showMessageDialog(this, "Bienvenido " + cliente.getNombre());
                 // Abrir ventana principal del comprador pasando el id del cliente

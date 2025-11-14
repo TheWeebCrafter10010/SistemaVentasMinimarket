@@ -1,5 +1,7 @@
 package UI;
 
+import BaseDatos.IProductosDAO;
+import BaseDatos.ProductosSQliteDAO;
 import Entidades.Cliente;
 import Entidades.Producto;
 import Entidades.DetalleVenta;
@@ -15,7 +17,7 @@ public class CompradorMain extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CompradorMain.class.getName());
     private Cliente cliente;
     private List<DetalleVenta> carrito = new ArrayList<>();
-    private ProductosDAOMock productosDAO = new ProductosDAOMock();
+    private IProductosDAO productosDAO = new ProductosSQliteDAO();
     
     
     public CompradorMain(Cliente cliente) {

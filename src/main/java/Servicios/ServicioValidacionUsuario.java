@@ -1,13 +1,13 @@
 package Servicios;
 
-import BaseDatos.IClienteDAO;
+import BaseDatos.IUsuarioDAO;
 import Entidades.Cliente;
 
-public class ServicioValidacionCliente {
+public class ServicioValidacionUsuario {
 
-    private IClienteDAO clienteDAO;
+    private IUsuarioDAO clienteDAO;
 
-    public ServicioValidacionCliente(IClienteDAO clienteDAO){
+    public ServicioValidacionUsuario(IUsuarioDAO clienteDAO){
         //Inyectar la dependencia del DAO
         this.clienteDAO = clienteDAO;
     }
@@ -49,6 +49,7 @@ public class ServicioValidacionCliente {
     public void registrarNuevoCliente(Cliente cliente) {
         //Registrar un nuevo cliente en la base de datos
         //Usar despues de haber hecho todas las validaciones necesarias
+
         clienteDAO.insertarCliente(cliente);
     }
 }

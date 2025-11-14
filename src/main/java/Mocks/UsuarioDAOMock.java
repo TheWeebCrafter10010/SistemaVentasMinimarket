@@ -1,18 +1,18 @@
 package Mocks;
 
-import BaseDatos.IClienteDAO;
+import BaseDatos.IUsuarioDAO;
 import Entidades.Cliente;
 import Entidades.Venta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClienteDAOMock implements IClienteDAO {
+public class UsuarioDAOMock implements IUsuarioDAO {
 
     private List<Cliente> clientes;
     private int idCounter = 1;
 
-    public ClienteDAOMock() {
+    public UsuarioDAOMock() {
         clientes = new ArrayList<>();
 
         // Datos de ejemplo iniciales
@@ -40,7 +40,7 @@ public class ClienteDAOMock implements IClienteDAO {
     }
 
     @Override
-    public Cliente obtenerClienteLogin(String email, String pwd) {
+    public Cliente obtenerUsuarioLogin(String email, String pwd) {
         for (Cliente c : clientes) {
             if (c.getEmail().equalsIgnoreCase(email) && c.getPwd().equals(pwd)) {
                 return c;
@@ -74,5 +74,10 @@ public boolean insertarCliente(Cliente cliente) {
             // Retorna todos los clientes si el límite es inválido o mayor que el tamaño de la lista
         }
         return new ArrayList<>(clientes.subList(0, limite));
+    }
+
+    @Override
+    public boolean insertarAccionAdmin(int idAdmin,String accion, String fecha) {
+        return false;
     }
 }

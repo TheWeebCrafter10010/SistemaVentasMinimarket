@@ -4,9 +4,9 @@ import DataTransferObjects.ValidacionRegistro;
 import Entidades.Cliente;
 
 public class ServicioRegistroClienteFacade {
-    private ServicioValidacionCliente servicioRegistro;
+    private ServicioValidacionUsuario servicioRegistro;
 
-    public ServicioRegistroClienteFacade(ServicioValidacionCliente servicioRegistro) {
+    public ServicioRegistroClienteFacade(ServicioValidacionUsuario servicioRegistro) {
         this.servicioRegistro = servicioRegistro;
     }
 

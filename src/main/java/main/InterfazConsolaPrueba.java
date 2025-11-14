@@ -6,7 +6,7 @@ import Entidades.Cliente;
 import Entidades.DetalleVenta;
 import Entidades.Producto;
 import Entidades.Venta;;
-import Servicios.ServicioLoginCliente;
+import Servicios.ServicioLoginUsuario;
 import Servicios.ServicioRegistroClienteFacade;
 import Servicios.VentasServicio;
 
@@ -17,14 +17,14 @@ public class InterfazConsolaPrueba {
     VentasServicio ventasServicio;
     IProductosDAO productosDAO;
     ServicioRegistroClienteFacade servicioRegistroCliente;
-    ServicioLoginCliente servicioLoginCliente;
+    ServicioLoginUsuario servicioLoginUsuario;
     Scanner sc = new Scanner(System.in);
 
-    public InterfazConsolaPrueba(IProductosDAO productosDAO, VentasServicio ventasServicio, ServicioRegistroClienteFacade servicioRegistroCliente,ServicioLoginCliente servicioLoginCliente) {
+    public InterfazConsolaPrueba(IProductosDAO productosDAO, VentasServicio ventasServicio, ServicioRegistroClienteFacade servicioRegistroCliente, ServicioLoginUsuario servicioLoginUsuario) {
         this.servicioRegistroCliente = servicioRegistroCliente;
         this.productosDAO = productosDAO;
         this.ventasServicio = ventasServicio;
-        this.servicioLoginCliente = servicioLoginCliente;
+        this.servicioLoginUsuario = servicioLoginUsuario;
     }
 
     public void generarVenta(){
@@ -78,9 +78,9 @@ public class InterfazConsolaPrueba {
         System.out.println("Ingrese contraseña:");
         String pwd = sc.nextLine();
 
-        boolean formatoValido = servicioLoginCliente.verificarFormatoValido(email,pwd);
+        boolean formatoValido = servicioLoginUsuario.verificarFormatoValido(email,pwd);
         if(formatoValido){
-            Entidades.Cliente cliente = servicioLoginCliente.loginCliente(email,pwd);
+            Entidades.Cliente cliente = (Cliente)servicioLoginUsuario.loginUsuario(email,pwd);
             if(cliente != null){
                 System.out.println("Login exitoso. Bienvenido!");
                 System.out.println(cliente);

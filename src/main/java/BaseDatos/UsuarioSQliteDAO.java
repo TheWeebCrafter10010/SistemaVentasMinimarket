@@ -1,29 +1,21 @@
 package BaseDatos;
 
-import Entidades.Cliente;
-import Entidades.DetalleVenta;
-import Entidades.Producto;
-import Entidades.Venta;
+import Entidades.*;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-public class ClienteSQliteDao implements IClienteDAO{
-
-
-    private final String clienteLogin="SELECT * FROM Cliente WHERE email=? AND password=?";
-    private final String clientePorEmail="SELECT * FROM Cliente WHERE email=?";
-    private final String insertarCliente="INSERT INTO Cliente (id_cli,nombre,apellido,email,password,telefono,direccion) VALUES (?,?,?,?,?,?,?)";
-    private final String obtenerClientes="SELECT id_cli,nombre,apellido,email FROM Cliente LIMIT ?";
+public class UsuarioSQliteDAO implements IUsuarioDAO {
 
     private Connection conn = ConexionSQlite.getConnection();
 
     @Override
-    public Cliente obtenerClienteLogin(String email, String pwd) {
+    public Usuario obtenerUsuarioLogin(String email, String pwd) {
+        String usuarioLogin ="SELECT * FROM Usuario WHERE email=? AND password=?";
         try {
-            PreparedStatement pstmt = conn.prepareStatement(clienteLogin);
+            PreparedStatement pstmt = conn.prepareStatement(usuarioLogin);
 
             pstmt.setString(1, email);
             pstmt.setString(2, pwd);
@@ -31,19 +23,27 @@ public class ClienteSQliteDao implements IClienteDAO{
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                int idCliente = rs.getInt("id_cli");
-                Cliente nuevoCliente = new Cliente.Builder()
-                        .setId(idCliente)
+                int idUser = rs.getInt("id_cli");
+                String rol = rs.getString("rol");
+                Usuario.Builder builder  = new Usuario.Builder()
+                        .setId(idUser)
                         .setNombre(rs.getString("nombre"))
                         .setApellido(rs.getString("apellido"))
                         .setEmail(rs.getString("email"))
                         .setPwd(rs.getString("password"))
                         .setTelefono(rs.getString("telefono"))
                         .setDireccion(rs.getString("direccion"))
-                        .buildCliente();
-                
-                nuevoCliente.setCompras(obtenerComprasCliente(idCliente));
-                return nuevoCliente;
+                        ;
+                if(rol.equals(RolesDB.CLIENTE.getRol())){
+                    Cliente cliente = builder.buildCliente();
+                    cliente.setCompras(obtenerComprasCliente(idUser));
+                    return cliente;
+                }
+                else if(rol.equals(RolesDB.ADMIN.getRol())){
+                    Admin admin = builder.buildAdmin();
+                    admin.setHistorialAcciones(obtenerHistorialAccionesAdmin(idUser));
+                    return admin;
+                }
                 
             }
             rs.close();
@@ -58,6 +58,7 @@ public class ClienteSQliteDao implements IClienteDAO{
     
     @Override
     public boolean emailYaRegistrado(String email) {
+        String clientePorEmail="SELECT * FROM Usuario WHERE email=?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(clientePorEmail);
             pstmt.setString(1, email);
@@ -72,7 +73,7 @@ public class ClienteSQliteDao implements IClienteDAO{
 
     @Override
     public boolean insertarCliente(Cliente cliente) {
-        String sql = "INSERT INTO Cliente (nombre, apellido, email, password, telefono, direccion) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Usuario (nombre, apellido, email, password, telefono, direccion,rol) VALUES (?, ?, ?, ?, ?, ?,?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getNombre());
@@ -81,6 +82,7 @@ public class ClienteSQliteDao implements IClienteDAO{
             stmt.setString(4, cliente.getPwd());
             stmt.setString(5, cliente.getTelefono());
             stmt.setString(6, cliente.getDireccion());
+            stmt.setString(7, RolesDB.CLIENTE.getRol());
 
             stmt.executeUpdate();
             return true;
@@ -94,6 +96,9 @@ public class ClienteSQliteDao implements IClienteDAO{
         //EL ADMIN PUEDE USAR ESTE METODO PARA VISUALIZAR LOS CLIENTES REGISTRADOS EN LA PLATAFORMA
         //SOLO SE MUESTRAN ID,NOMBRE,APELLIDO Y EMAIL
         //SI SE QUIERE VER MAS DETALLES DE UN CLIENTE, SE DEBE USAR OTRO METODO (ya depende del controlador :v)
+
+        String obtenerClientes="SELECT id_cli,nombre,apellido,email FROM Usuario LIMIT ? WHERE rol='USER'";
+
         List<Cliente> clientes = new ArrayList<>(limite);//XDDDDDDDDDD
 
         try{
@@ -117,6 +122,24 @@ public class ClienteSQliteDao implements IClienteDAO{
         }catch(Exception e){
             System.out.println("Error al obtener clientes: " + e.getMessage());
             return null;
+        }
+    }
+
+    @Override
+    public boolean insertarAccionAdmin(int idAdmin,String accion,String fecha) {
+        String insercionAdmin ="INSERT INTO HistorialAdmin (id_admin,Accion,Fecha) VALUES (?, ?,?)";
+        try  {
+            PreparedStatement stmt = conn.prepareStatement(insercionAdmin);
+            stmt.setInt(1, idAdmin);
+            stmt.setString(2, accion);
+            stmt.setString(3, fecha);
+
+            stmt.executeUpdate();
+            stmt.close();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error al insertar accion admin: " + e.getMessage());
+            return false;
         }
     }
 
@@ -170,6 +193,28 @@ public class ClienteSQliteDao implements IClienteDAO{
             return compras;
         }catch(SQLException e){
             System.out.println("Error al obtener compras del cliente: " + e.getMessage());
+        }
+        return null;
+    }
+
+    private List<String> obtenerHistorialAccionesAdmin(int idAdmin){
+        //Metodo para obtener el historial de acciones de un admin
+        String consulta="SELECT Accion,Fecha FROM HistorialAdmin WHERE id_admin=?";
+        List<String> historial = new ArrayList<>();
+        try{
+            PreparedStatement pstmt = conn.prepareStatement(consulta);
+            pstmt.setInt(1, idAdmin);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                String accion = rs.getString("Accion");
+                String fecha = rs.getString("Fecha");
+                historial.add(accion + " - " + fecha);
+            }
+            rs.close();
+            pstmt.close();
+            return historial;
+        }catch(SQLException e){
+            System.out.println("Error al obtener historial de acciones del admin: " + e.getMessage());
         }
         return null;
     }

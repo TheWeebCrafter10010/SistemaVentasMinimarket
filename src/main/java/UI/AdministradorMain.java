@@ -1,9 +1,9 @@
 package UI;
 import Entidades.Cliente;
 import Entidades.Producto;
-import Mocks.ClienteDAOMock;
+import Mocks.UsuarioDAOMock;
 import Mocks.ProductosDAOMock;
-import BaseDatos.IClienteDAO;
+import BaseDatos.IUsuarioDAO;
 import BaseDatos.IProductosDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 public class AdministradorMain extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdministradorMain.class.getName());
-    private final IClienteDAO clienteDAO;
+    private final IUsuarioDAO clienteDAO;
     private final IProductosDAO productoDAO;
 
     public AdministradorMain() {
@@ -20,7 +20,7 @@ public class AdministradorMain extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
 
         // Instanciamos los DAOs mock (temporales)
-        clienteDAO = new ClienteDAOMock();
+        clienteDAO = new UsuarioDAOMock();
         productoDAO = new ProductosDAOMock();
 
         // Cargar datos iniciales

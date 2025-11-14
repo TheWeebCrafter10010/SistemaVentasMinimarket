@@ -1,6 +1,6 @@
 package UI;
 
-import BaseDatos.IClienteDAO;
+import BaseDatos.IUsuarioDAO;
 import Entidades.Cliente;
 import javax.swing.JOptionPane;
 
@@ -8,11 +8,11 @@ public class RegistroClienteFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistroClienteFrame.class.getName());
     
-    private IClienteDAO clienteDao;
+    private IUsuarioDAO clienteDao;
     /**
      * Creates new form RegistroClienteFrom
      */
-    public RegistroClienteFrame(IClienteDAO clienteDao) {
+    public RegistroClienteFrame(IUsuarioDAO clienteDao) {
         this.clienteDao = clienteDao;
         initComponents();
     }

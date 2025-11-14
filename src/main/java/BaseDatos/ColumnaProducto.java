@@ -4,7 +4,7 @@ public enum ColumnaProducto {
     //Enum de columnas que se pueden actualizar en la tabla Producto
     STOCK("stock",Integer.class),
     PRECIO("precio",Double.class),
-    IMGURL("imgUrl",String.class);
+    IMGURL("imgURL",String.class);
 
     private final String columna;
     private final Class<?> tipo;

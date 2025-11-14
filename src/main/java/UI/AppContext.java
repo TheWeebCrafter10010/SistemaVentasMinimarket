@@ -13,7 +13,7 @@ import BaseDatos.*;
 public class AppContext {
     
     public static void main(String[] args) {
-        IClienteDAO clienteDAO = new ClienteSQliteDao();
+        IUsuarioDAO clienteDAO = new UsuarioSQliteDAO();
         
         LoginFrame login = new LoginFrame(clienteDAO);
         login.setVisible(true);

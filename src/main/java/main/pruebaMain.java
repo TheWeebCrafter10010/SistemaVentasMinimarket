@@ -2,10 +2,10 @@ package main;
 
 import BaseDatos.*;
 import Entidades.Cliente;
-import Entidades.*;
-import Entidades.Venta;
-import Mocks.*;
-import Servicios.*;
+import Entidades.Producto;
+import Entidades.Usuario;
+
+import java.util.List;
 
 public class pruebaMain {
     public static void main(String[] args) {
@@ -15,7 +15,7 @@ public class pruebaMain {
 //        ServicioRegistroClienteFacade servicioRegistroCliente = new ServicioRegistroClienteFacade(servicioValidacionCliente);
 //        ServicioLoginCliente servicioLoginCliente = new ServicioLoginCliente(servicioValidacionCliente, clienteDAO);
 //
-//        IProductosDAO productosDAO = new ProductosDAOMock();
+//
 //        IVentasDAO ventasDAO = new VentasDAOMock();
 //        VentasServicio ventasServicio = new VentasServicio(ventasDAO, new DetalleVentaServicio(), productosDAO);
 //        InterfazConsolaPrueba interfaz =
@@ -24,10 +24,6 @@ public class pruebaMain {
 //        interfaz.registroPrueba();
 //        interfaz.loginPrueba();
 
-        ClienteSQliteDao clienteSQliteDao = new ClienteSQliteDao();
-
-        Cliente cliente = clienteSQliteDao.obtenerClienteLogin("alonso123@gmail.com","holamundo");
-        System.out.println(cliente);
             
     }
 }

@@ -1,15 +1,15 @@
 package Servicios;
 
-import BaseDatos.IClienteDAO;
-import Entidades.Cliente;
+import BaseDatos.IUsuarioDAO;
+import Entidades.Usuario;
 
-public class ServicioLoginCliente {
+public class ServicioLoginUsuario {
 
-    private ServicioValidacionCliente validacion;
-    private IClienteDAO clienteDAO;
+    private ServicioValidacionUsuario validacion;
+    private IUsuarioDAO usuarioDAO;
 
-    public ServicioLoginCliente(ServicioValidacionCliente validacion, IClienteDAO clienteDAO) {
-        this.clienteDAO = clienteDAO;
+    public ServicioLoginUsuario(ServicioValidacionUsuario validacion, IUsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
         this.validacion = validacion;
     }
 
@@ -21,9 +21,10 @@ public class ServicioLoginCliente {
         return emailValido && pwdValida;
     }
 
-    public Cliente loginCliente(String email, String pwd) {
+    public Usuario loginUsuario(String email, String pwd) {
         //Usar despues de verificar que el formato es valido
-        return clienteDAO.obtenerClienteLogin(email,pwd);
+        //Puede devolver un Admin o un Cliente
+        return usuarioDAO.obtenerUsuarioLogin(email,pwd);
     }
 
 }
