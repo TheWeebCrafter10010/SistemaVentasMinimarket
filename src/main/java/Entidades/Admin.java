@@ -1,18 +1,22 @@
 
 package Entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Admin extends Usuario{
     
-    private List<String> historialAcciones;
+    private List<String> historialAcciones = new ArrayList<>();
 
     public Admin(Builder builder) {
         super(builder);
     }
     
-    public void setHistorialAcciones(List <String>historial){
-        this.historialAcciones = historial;
+    public void addAccion(String accion) {
+        if(this.historialAcciones==null){
+            this.historialAcciones = new ArrayList<>();
+        }
+        this.historialAcciones.add(accion);
     }
     
     public List<String> getHistorialAcciones(){

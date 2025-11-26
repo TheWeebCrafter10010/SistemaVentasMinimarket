@@ -1,78 +1,62 @@
 package main;
 
-import BaseDatos.IProductosDAO;
 import DataTransferObjects.ValidacionRegistro;
-import Entidades.Cliente;
-import Entidades.DetalleVenta;
-import Entidades.Producto;
-import Entidades.Venta;;
+import Entidades.*;
+;
 import Servicios.ServicioLoginUsuario;
 import Servicios.ServicioRegistroClienteFacade;
+import Servicios.ValidarInput;
 import Servicios.VentasServicio;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class InterfazConsolaPrueba {
+public class InterfazLogin {
     VentasServicio ventasServicio;
-    IProductosDAO productosDAO;
+
     ServicioRegistroClienteFacade servicioRegistroCliente;
     ServicioLoginUsuario servicioLoginUsuario;
     Scanner sc = new Scanner(System.in);
 
-    public InterfazConsolaPrueba(IProductosDAO productosDAO, VentasServicio ventasServicio, ServicioRegistroClienteFacade servicioRegistroCliente, ServicioLoginUsuario servicioLoginUsuario) {
+    private InterfazUsuario interfazUsuario;
+
+    public InterfazLogin(VentasServicio ventasServicio, ServicioRegistroClienteFacade servicioRegistroCliente, ServicioLoginUsuario servicioLoginUsuario) {
         this.servicioRegistroCliente = servicioRegistroCliente;
-        this.productosDAO = productosDAO;
         this.ventasServicio = ventasServicio;
         this.servicioLoginUsuario = servicioLoginUsuario;
     }
 
-    public void generarVenta(){
-        List<Entidades.DetalleVenta> detallesVenta = new java.util.ArrayList<>();
-
-        boolean continuar = true;
+    public void iniciar(){
+        boolean valido = true;
 
         do{
-            System.out.println("Ingresa el ID del producto:");
-            int idProducto = sc.nextInt();
-            Producto producto = productosDAO.obtenerProductoPorID(idProducto);
+            System.out.println("Bienvenido al minimarket! Seleccione una opcion:");
+            System.out.println("1. Login");
+            System.out.println("2. Registro");
+            System.out.println("3. Salir");
 
-            if(producto != null){
-                System.out.println(producto);
+            int opcion = ValidarInput.leerEntero();
 
-                if(ventasServicio.verificarProductoEnLista(producto,detallesVenta)){
-                    System.out.println("El producto ya fue agregado a la venta.");
-                }else {
-
-                    boolean cantidadValida = false;
-                    while(!cantidadValida){
-                        System.out.println("Ingresa la cantidad a vender:");
-                        int cantidad = sc.nextInt();
-
-                        cantidadValida = ventasServicio.agregarProductoAVenta(producto,cantidad,detallesVenta);
-                    }
-
-                    System.out.println("¿Deseas agregar otro producto? (s/n)");
-                    String respuesta = sc.next();
-                    if(respuesta.equalsIgnoreCase("n")){
-                        continuar = false;
-                    }
-                }
-
-            }else{
-                System.out.println("Producto no encontrado.");
+            switch(opcion){
+                case 1:
+                    login();
+                    break;
+                case 2:
+                    registro();
+                    break;
+                case 3:
+                    valido = false;
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
             }
-        }while(continuar);
 
-        Venta nuevaVenta = ventasServicio.generarVenta(detallesVenta,3);//ID cliente hardcodeado para pruebas
-        System.out.println(nuevaVenta);
-        for(DetalleVenta dv: nuevaVenta.getProductosVendidos()){
-            System.out.println(dv.getProducto());
-        }
-
+        }while(valido);
     }
 
-    public void loginPrueba(){
+    private void login(){
         System.out.println("Ingrese email:");
         String email = sc.nextLine();
         System.out.println("Ingrese contraseña:");
@@ -80,10 +64,22 @@ public class InterfazConsolaPrueba {
 
         boolean formatoValido = servicioLoginUsuario.verificarFormatoValido(email,pwd);
         if(formatoValido){
-            Entidades.Cliente cliente = (Cliente)servicioLoginUsuario.loginUsuario(email,pwd);
-            if(cliente != null){
-                System.out.println("Login exitoso. Bienvenido!");
-                System.out.println(cliente);
+            Usuario user = servicioLoginUsuario.loginUsuario(email,pwd);
+            if(user != null){
+                System.out.println("Login exitoso");
+                if(user instanceof Admin){
+                    System.out.println("Bienvenido Admin "+user.getNombre()+"!");
+                }else{
+                    System.out.println("Bienvenido Cliente "+user.getNombre()+"!");
+                    if(interfazUsuario==null){
+                        interfazUsuario = new InterfazUsuario(ventasServicio);
+                        System.out.println("Creando la interfaz de usuario...");
+                    }
+                    interfazUsuario.setCliente((Cliente)user);
+                    interfazUsuario.start();
+
+                }
+
             }else{
                 System.out.println("Email o contraseña incorrectos.");
             }
@@ -92,7 +88,7 @@ public class InterfazConsolaPrueba {
         }
     }
 
-    public void registroPrueba(){
+    private void registro(){
         System.out.println("Ingrese nombre:");
         String nombre = sc.nextLine();
         System.out.println("Ingrese apellido:");

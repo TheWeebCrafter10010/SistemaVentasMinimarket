@@ -18,7 +18,7 @@ public class ServicioRegistroClienteFacade {
         validacion.pwdFormato = servicioRegistro.verificarPwd(cliente.getPwd());
         validacion.telefonoFormato = servicioRegistro.verificarTelefono(cliente.getTelefono());
 
-        return  validacion;
+        return validacion;
     }
 
     public boolean verificarEmailUnico(String email) {

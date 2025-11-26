@@ -1,9 +1,10 @@
 package Entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cliente extends Usuario{
-    private List<Venta> compras;
+    private List<Venta> compras = new ArrayList<Venta>();
 
     public Cliente(Builder builder){
         super(builder);

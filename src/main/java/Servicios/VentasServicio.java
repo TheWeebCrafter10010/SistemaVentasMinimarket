@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 public class VentasServicio {
@@ -27,6 +28,13 @@ public class VentasServicio {
         this.ventasDAO = ventasDAO;
         this.detalleVentaServicio = detalleVentaServicio;
         this.productosDAO = productosDAO;
+    }
+
+    public Producto obtenerProducto(int idProducto){
+        return productosDAO.obtenerProductoPorID(idProducto);
+    }
+    public Map<Integer, Producto> obtenerProductos(){
+        return productosDAO.obtenerProductos();
     }
 
     public boolean agregarProductoAVenta(Producto producto, int cantidad, List<DetalleVenta> detalleVenta){
@@ -71,7 +79,7 @@ public class VentasServicio {
         for(DetalleVenta detalle : venta.getProductosVendidos()){
             Producto producto = detalle.getProducto();
             int nuevoStock = producto.getStock() - detalle.getCantidad();
-            productosDAO.actualizarColumnaProducto(producto.getId(), ColumnaProducto.STOCK,nuevoStock);
+            producto.setStock(nuevoStock);
         }
     }
 }

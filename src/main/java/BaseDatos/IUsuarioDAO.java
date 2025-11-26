@@ -3,7 +3,7 @@ package BaseDatos;
 import Entidades.Cliente;
 import Entidades.Usuario;
 
-import java.util.List;
+import java.util.Map;
 
 public interface IUsuarioDAO {
 
@@ -15,7 +15,6 @@ public interface IUsuarioDAO {
 
     boolean insertarCliente(Cliente cliente);
 
-    List<Cliente> obtenerClientes(int limite);
+    Map<String,Usuario> obtenerClientes();
 
-    boolean insertarAccionAdmin(int idAdmin,String accion,String fecha);
 }
