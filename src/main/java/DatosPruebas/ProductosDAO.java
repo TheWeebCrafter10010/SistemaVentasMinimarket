@@ -2,19 +2,19 @@ package DatosPruebas;
 
 import BaseDatos.IProductosDAO;
 import Entidades.Producto;
-import Servicios.stock.StockObserver;
-import Servicios.stock.StockSubject;
+import Observadores.DaoObserver;
+import Observadores.DaoSubject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProductosDAO implements IProductosDAO, StockSubject {
+public class ProductosDAO implements IProductosDAO, DaoSubject {
 
     private HashMap<Integer, Producto> productos;
     private int contadorIDs = 20; // inicia > últimos IDs que ya tenías (evita colisiones)
-    private List<StockObserver> observers;
+    private List<DaoObserver> observers;
     private final int UMBRAL_STOCK_BAJO = 10; // umbral configurable
 
     public ProductosDAO(){
@@ -80,29 +80,25 @@ public class ProductosDAO implements IProductosDAO, StockSubject {
             productos.put(producto.getId(), producto);
             if (producto.getStock() <= UMBRAL_STOCK_BAJO) {
                 notifyObservers("Stock bajo tras actualización: " + producto.getNombre() + " (stock=" + producto.getStock() + ")");
-            } else {
-                notifyObservers("Producto actualizado: " + producto.getNombre() + " (stock=" + producto.getStock() + ")");
             }
         }
     }
 
     // StockSubject methods
     @Override
-    public void attach(StockObserver observer) {
+    public void attach(DaoObserver observer) {
         if (!observers.contains(observer)) observers.add(observer);
     }
 
     @Override
-    public void detach(StockObserver observer) {
+    public void detach(DaoObserver observer) {
         observers.remove(observer);
     }
 
     @Override
     public void notifyObservers(String mensaje) {
-        for (StockObserver o : observers) {
-            try {
-                o.actualizarStock(mensaje);
-            } catch (Exception ignored) {}
+        for (DaoObserver o : observers) {
+            o.notificarCambio(mensaje);
         }
     }
 }

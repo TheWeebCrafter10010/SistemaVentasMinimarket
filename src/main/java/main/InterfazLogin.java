@@ -1,44 +1,31 @@
 package main;
 
-import DataTransferObjects.ValidacionRegistro;
+import Servicios.Validacion.ValidacionRegistro;
 import Entidades.*;
-import Servicios.ServicioLoginUsuario;
-import Servicios.ServicioRegistroClienteFacade;
-import Servicios.ValidarInput;
-import Servicios.VentasServicio;
-import BaseDatos.IProductosDAO;
-import BaseDatos.IUsuarioDAO;
-import BaseDatos.IVentasDAO;
+import Servicios.LoginRegistro.ServicioLoginUsuario;
+import Servicios.LoginRegistro.ServicioRegistroClienteFacade;
+import Utils.ValidarInput;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class InterfazLogin {
-    VentasServicio ventasServicio;
 
-    ServicioRegistroClienteFacade servicioRegistroCliente;
-    ServicioLoginUsuario servicioLoginUsuario;
-    Scanner sc = new Scanner(System.in);
+    private ServicioRegistroClienteFacade servicioRegistroCliente;
+    private ServicioLoginUsuario servicioLoginUsuario;
+    private Scanner sc = new Scanner(System.in);
 
-    private InterfazUsuario interfazUsuario;
-    private IProductosDAO productosDAO;
-private IUsuarioDAO usuarioDAO;
-private IVentasDAO ventasDAO;
+    private InterfazUsuario userUI;
+    private InterfazAdmin adminUI;
 
-public InterfazLogin(VentasServicio ventasServicio,
-                     ServicioRegistroClienteFacade servicioRegistroCliente,
-                     ServicioLoginUsuario servicioLoginUsuario,
-                     IProductosDAO productosDAO,
-                     IUsuarioDAO usuarioDAO,
-                     IVentasDAO ventasDAO) {
+    public InterfazLogin(ServicioRegistroClienteFacade servicioRegistroCliente,
+                         ServicioLoginUsuario servicioLoginUsuario,InterfazAdmin adminUI,
+                         InterfazUsuario userUI){
 
-    this.servicioRegistroCliente = servicioRegistroCliente;
-    this.ventasServicio = ventasServicio;
-    this.servicioLoginUsuario = servicioLoginUsuario;
-    this.productosDAO = productosDAO;
-    this.usuarioDAO = usuarioDAO;
-    this.ventasDAO = ventasDAO;
-}
+        this.servicioRegistroCliente = servicioRegistroCliente;
+        this.servicioLoginUsuario = servicioLoginUsuario;
+        this.adminUI = adminUI;
+        this.userUI = userUI;
+    }
 
     public void iniciar(){
         boolean valido = true;
@@ -82,25 +69,17 @@ public InterfazLogin(VentasServicio ventasServicio,
             if(user != null){
                 System.out.println("Login exitoso");
                 if(user instanceof Admin){
-    System.out.println("Bienvenido Admin "+user.getNombre()+"!");
-    // Abrir interfaz admin
-    InterfazAdmin adminUI = new InterfazAdmin(
-        productosDAO,
-        usuarioDAO,
-        ventasDAO
-);
+                    Admin admin = (Admin)user;
+                    System.out.println("Bienvenido Admin "+user.getNombre()+"!");
+                    // Abrir interfaz admin
 
-    // Mejor: pasar las instancias creadas en SistemaContexto en vez de crear nuevas.
-    // Si no tienes getter, modifica SistemaContexto para pasar las mismas instancias.
-    adminUI.start();
-} else {
+                    adminUI.setAdmin(admin);
+                    adminUI.start();
+                } else {
                     System.out.println("Bienvenido Cliente "+user.getNombre()+"!");
-                    if(interfazUsuario==null){
-                        interfazUsuario = new InterfazUsuario(ventasServicio);
-                        System.out.println("Creando la interfaz de usuario...");
-                    }
-                    interfazUsuario.setCliente((Cliente)user);
-                    interfazUsuario.start();
+
+                    userUI.setCliente((Cliente)user);
+                    userUI.start();
 
                 }
 
@@ -132,26 +111,14 @@ public InterfazLogin(VentasServicio ventasServicio,
                                     .setTelefono(telefono)
                                     .buildCliente();
 
-        ValidacionRegistro valido = servicioRegistroCliente.validarCampos(nuevoCliente);
+        ValidacionRegistro valido = servicioRegistroCliente.registrarCliente(nuevoCliente);
 
         if(valido.esValido()){
-
-            boolean emailUnico = servicioRegistroCliente.verificarEmailUnico(nuevoCliente.getEmail());
-
-            if(emailUnico){
-                servicioRegistroCliente.registrarNuevoCliente(nuevoCliente);
-                System.out.println("Registro exitoso.");
-
-            }else{
-                System.out.println("El email ya está registrado.");
-            }
-
-
+            System.out.println("Registro exitoso! Ya puede iniciar sesión.");
         }else{
-            System.out.println("No se pudo registrar el cliente.");
+            System.out.println("Error al registrarse:");
             System.out.println(valido.mostrarErrores());
         }
-
 
 
     }

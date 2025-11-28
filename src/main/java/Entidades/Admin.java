@@ -6,36 +6,25 @@ import java.util.List;
 
 public class Admin extends Usuario{
     
-    private List<String> historialAcciones = new ArrayList<>();
+    private List<String> notificaciones= new ArrayList<>();
 
     public Admin(Builder builder) {
         super(builder);
     }
     
-    public void addAccion(String accion) {
-        if(this.historialAcciones==null){
-            this.historialAcciones = new ArrayList<>();
-        }
-        this.historialAcciones.add(accion);
+    public void addNotificacion(String notificacion) {
+
+        this.notificaciones.add(notificacion);
     }
     
-    public List<String> getHistorialAcciones(){
+    public List<String> getNotificaciones(){
         
-        return this.historialAcciones;
-    }
-    
-    public void addAccion(String accion, String fecha){
-        StringBuilder nuevaAccion = new StringBuilder();
-        nuevaAccion.append(this.getNombre()+" ");
-        nuevaAccion.append(accion);
-        nuevaAccion.append("-"+fecha);
-        historialAcciones.add(nuevaAccion.toString());
-        
+        return this.notificaciones;
     }
 
     @Override
     public String toString() {
-        return "Admin"+super.toString()+"\n{" + "historialAcciones=" + historialAcciones.toString() + '}';
+        return "Admin"+super.toString()+"\n{" + "historialAcciones=" + notificaciones.toString() + '}';
     }
     
 

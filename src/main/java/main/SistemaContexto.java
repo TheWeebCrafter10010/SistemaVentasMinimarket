@@ -1,41 +1,49 @@
 package main;
 
-import BaseDatos.IProductosDAO;
-import BaseDatos.IUsuarioDAO;
-import BaseDatos.IVentasDAO;
+
 import DatosPruebas.*;
+import Entidades.Admin;
 import Entidades.Usuario;
-import Mocks.VentasDAOMock;
-import Servicios.*;
+import DatosPruebas.VentasDAO;
+import Servicios.LoginRegistro.ServicioLoginUsuario;
+import Servicios.LoginRegistro.ServicioRegistroClienteFacade;
+import Servicios.Validacion.ServicioValidacionUsuario;
+import Servicios.Ventas.VentasServicio;
+import Observadores.AdminDaoObserver;
 
 public class SistemaContexto {
 
 
     public static InterfazLogin crearInterfaz() {
     // Crear DAOs
-    IUsuarioDAO usuarioDAO = new UsuariosDAO();
-    ProductosDAO productosDAO = new ProductosDAO(); // concrete type to attach observers
-    IProductosDAO productosDAOInterface = productosDAO;
-    IVentasDAO ventasDAO = new VentasDAOMock();
+    UsuariosDAO usuarioDAO = new UsuariosDAO();
+    ProductosDAO productosDAO = new ProductosDAO();
+    VentasDAO ventasDAO = new VentasDAO();
 
     // Registrar admins como observadores (recorrer usuarios y tomar Admins)
     for (Usuario u : usuarioDAO.obtenerClientes().values()) {
-        if (u instanceof Entidades.Admin) {
-            Entidades.Admin admin = (Entidades.Admin) u;
-            Servicios.stock.AdminStockObserver obs = new Servicios.stock.AdminStockObserver(admin);
+        if (u instanceof Admin) {
+            Admin admin = (Admin) u;
+            AdminDaoObserver obs = new AdminDaoObserver(admin);
             productosDAO.attach(obs);
+            usuarioDAO.attach(obs);
         }
     }
 
     // Crear Servicios
     var servicioValidacionUsuario = new ServicioValidacionUsuario(usuarioDAO);
-    var servicioRegistroCliente = new ServicioRegistroClienteFacade(servicioValidacionUsuario);
-    var servicioLoginUsuario = new ServicioLoginUsuario(servicioValidacionUsuario, usuarioDAO);
-    var detalleVentaServicio = new Servicios.DetalleVentaServicio();
-    var ventasServicio = new VentasServicio(ventasDAO, detalleVentaServicio, productosDAOInterface);
 
-    var interfaz = new InterfazLogin(ventasServicio, servicioRegistroCliente, servicioLoginUsuario,
-                                    productosDAOInterface, usuarioDAO, ventasDAO);
+    var servicioRegistroCliente = new ServicioRegistroClienteFacade(servicioValidacionUsuario,usuarioDAO);
+    var servicioLoginUsuario = new ServicioLoginUsuario(servicioValidacionUsuario, usuarioDAO);
+    var ventasServicio = new VentasServicio(ventasDAO, productosDAO);
+
+    InterfazAdmin adminUI = new InterfazAdmin(productosDAO, usuarioDAO, ventasDAO);
+    InterfazUsuario usuarioUI = new InterfazUsuario(ventasServicio);
+
+
+    var interfaz = new InterfazLogin(servicioRegistroCliente, servicioLoginUsuario,
+            adminUI, usuarioUI);
+
     return interfaz;
 
 

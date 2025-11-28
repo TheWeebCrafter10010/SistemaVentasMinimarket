@@ -9,7 +9,7 @@ public interface IProductosDAO {
 
     Producto obtenerProductoPorID(int id);
 
-    Map<Integer,Producto> obtenerProductos(); // Búsqueda parcial por nombre
+    Map<Integer,Producto> obtenerProductos();
 
     //Insertar nuevo producto, dvuelve el ID generado
     int insertarProducto(Producto producto);

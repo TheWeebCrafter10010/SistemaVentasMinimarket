@@ -3,14 +3,12 @@ package main;
 import BaseDatos.IProductosDAO;
 import BaseDatos.IVentasDAO;
 import BaseDatos.IUsuarioDAO;
-import Entidades.Cliente;
-import Entidades.Producto;
-import Entidades.Venta;
-import Servicios.ProductoValidator;
-import Servicios.ValidarInput;
+import Entidades.*;
+import Servicios.Validacion.ProductoValidator;
+import Utils.DatosFormater;
+import Utils.ValidarInput;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class InterfazAdmin {
@@ -19,6 +17,7 @@ public class InterfazAdmin {
     private IUsuarioDAO usuarioDAO;
     private IVentasDAO ventasDAO;
     private Scanner sc = new Scanner(System.in);
+    private Admin admin;
 
     public InterfazAdmin(IProductosDAO productosDAO, IUsuarioDAO usuarioDAO, IVentasDAO ventasDAO) {
         this.productosDAO = productosDAO;
@@ -37,7 +36,8 @@ public class InterfazAdmin {
             System.out.println("1. 👥 Ver clientes");
             System.out.println("2. 📦 Gestión de productos");
             System.out.println("3. 💰 Ver ventas");
-            System.out.println("4. 🚪 Cerrar sesión");
+            System.out.println("4. \uD83D\uDD14 Ver notificaciones");
+            System.out.println("5. 🚪 Cerrar sesión");
             System.out.println("======================================");
             System.out.print("Seleccione una opción: ");
 
@@ -46,7 +46,8 @@ public class InterfazAdmin {
                 case 1 -> mostrarClientes();
                 case 2 -> menuProductos();
                 case 3 -> mostrarVentas();
-                case 4 -> {
+                case 4 -> mostrarNotificaciones();
+                case 5 -> {
                     seguir = false;
                     System.out.println("Sesión admin cerrada.");
                 }
@@ -55,30 +56,10 @@ public class InterfazAdmin {
         } while (seguir);
     }
 
-    // ====================== CLIENTES ======================
-
     private void mostrarClientes() {
-        System.out.println("\n================ LISTA DE CLIENTES ================");
-        System.out.printf("%-4s %-15s %-15s %-25s %-12s%n",
-                "ID", "NOMBRE", "APELLIDO", "EMAIL", "TIPO");
-        System.out.println("---------------------------------------------------");
-
-        for (Object o : usuarioDAO.obtenerClientes().values()) {
-            if (o instanceof Cliente c) {
-                System.out.printf("%-4d %-15s %-15s %-25s %-12s%n",
-                        c.getId(),
-                        c.getNombre(),
-                        c.getApellido(),
-                        c.getEmail(),
-                        "CLIENTE"
-                );
-            }
-        }
-
-        pausa();
+        DatosFormater.mostrarClientes(usuarioDAO.obtenerClientes());
+        ValidarInput.pausa();
     }
-
-    // ====================== PRODUCTOS ======================
 
     private void menuProductos() {
         boolean seguir = true;
@@ -105,21 +86,7 @@ public class InterfazAdmin {
     }
 
     private void mostrarProductos() {
-        System.out.println("\n================ LISTA DE PRODUCTOS ================");
-        System.out.printf("%-4s %-25s %-10s %-8s%n",
-                "ID", "PRODUCTO", "PRECIO", "STOCK");
-        System.out.println("----------------------------------------------------");
-
-        for (Producto p : productosDAO.obtenerProductos().values()) {
-            System.out.printf("%-4d %-25s S/. %-7.2f %-8d%n",
-                    p.getId(),
-                    p.getNombre(),
-                    p.getPrecio(),
-                    p.getStock()
-            );
-        }
-
-        pausa();
+        DatosFormater.mostrarProductos(productosDAO.obtenerProductos());
     }
 
     private void editarProducto(ProductoValidator validator) {
@@ -137,15 +104,16 @@ public class InterfazAdmin {
                 p.getNombre(), p.getPrecio(), p.getStock());
 
         System.out.print("Nuevo nombre (Enter para mantener): ");
-        String nombre = sc.nextLine();
+        String nombre = ValidarInput.leerString();
         if (nombre.isBlank()) nombre = p.getNombre();
 
         System.out.print("Nuevo precio (0 para mantener): ");
-        double precio = readDoubleAllowZero();
+        double precio = ValidarInput.leerDouble();
         if (precio == 0) precio = p.getPrecio();
 
         System.out.print("Nuevo stock (-1 para mantener): ");
-        int stock = readIntAllowMinusOne();
+
+        int stock = ValidarInput.leerEntero();
         if (stock == -1) stock = p.getStock();
 
         var res = validator.validar(nombre, precio, stock);
@@ -167,10 +135,10 @@ public class InterfazAdmin {
 
     private void agregarProducto(ProductoValidator validator) {
         System.out.print("Nombre: ");
-        String nombre = sc.nextLine();
+        String nombre = ValidarInput.leerString();
 
         System.out.print("Precio: ");
-        double precio = readDoubleStrict();
+        double precio = ValidarInput.leerDouble();
 
         System.out.print("Stock: ");
         int stock = ValidarInput.leerEntero();
@@ -191,91 +159,28 @@ public class InterfazAdmin {
         System.out.println("✅ Producto registrado con ID " + id);
     }
 
-    // ====================== VENTAS ======================
-
     private void mostrarVentas() {
-        System.out.println("\n================ HISTORIAL DE VENTAS ================");
-        System.out.printf("%-4s %-20s %-8s %-15s%n",
-                "ID", "CLIENTE", "TOTAL", "FECHA");
-        System.out.println("----------------------------------------------------");
+        DatosFormater.mostrarVentas(ventasDAO.obtenerVentas());
+        System.out.println("Ingrese la ID de venta para ver el ticket de venta o 0 para volver: ");
 
-        try {
-            List<Venta> ventas = (List<Venta>) ventasDAO
-                    .getClass()
-                    .getMethod("getVentas")
-                    .invoke(ventasDAO);
-
-            for (Venta v : ventas) {
-                System.out.printf("%-4d %-20s S/. %-5.2f %-15s%n",
-                        v.getID(),
-                        obtenerNombreCliente(v.getID()),
-                        v.getTotal(),
-                        v.getFecha()
-                );
-            }
-
-        } catch (Exception e) {
-            Venta ultima = ventasDAO.obtenerUltimaVenta();
-            if (ultima != null) {
-                System.out.printf("%-4d %-20s S/. %-5.2f %-15s%n",
-                        ultima.getID(),
-                        obtenerNombreCliente(ultima.getID()),
-                        ultima.getTotal(),
-                        ultima.getFecha()
-                );
-            } else {
-                System.out.println("No hay ventas registradas.");
-            }
+        int idVenta = ValidarInput.leerEntero();
+        if (idVenta == 0) return;
+        Venta venta = ventasDAO.obtenerVentaPorID(idVenta);
+        if (venta != null) {
+            System.out.println(venta);
+        } else {
+            System.out.println("Venta no encontrada.");
         }
-
-        pausa();
+        ValidarInput.pausa();
     }
 
-    // ====================== UTILIDADES ======================
-
-    private String obtenerNombreCliente(int id) {
-        for (Object o : usuarioDAO.obtenerClientes().values()) {
-            if (o instanceof Cliente c && c.getId() == id) {
-                return c.getNombre() + " " + c.getApellido();
-            }
-        }
-        return "Desconocido";
+    private void mostrarNotificaciones() {
+        List<String> notificaciones = admin.getNotificaciones();
+        notificaciones.forEach(System.out::println);
+        ValidarInput.pausa();
     }
 
-    private void pausa() {
-        System.out.println("\nPresione Enter para volver...");
-        sc.nextLine();
-    }
-
-    private double readDoubleAllowZero() {
-        while (true) {
-            try {
-                return Double.parseDouble(sc.nextLine());
-            } catch (Exception e) {
-                System.out.print("Ingrese un número válido: ");
-            }
-        }
-    }
-
-    private double readDoubleStrict() {
-        while (true) {
-            try {
-                double n = Double.parseDouble(sc.nextLine());
-                if (n > 0) return n;
-                System.out.print("Debe ser mayor que 0: ");
-            } catch (Exception e) {
-                System.out.print("Ingrese un número válido: ");
-            }
-        }
-    }
-
-    private int readIntAllowMinusOne() {
-        while (true) {
-            try {
-                return Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-                System.out.print("Ingrese un número válido (-1 para mantener): ");
-            }
-        }
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 }

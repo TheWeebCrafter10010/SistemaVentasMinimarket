@@ -12,12 +12,6 @@ public class DetalleVenta {
         this.cantidad = cantidad;
         this.precioUnitario = producto.getPrecio();
     }
-    public DetalleVenta(Producto producto, int cantidad, double precioUnitario) {
-        //Constructor cuando se lee un detalleVenta de la BD
-        this.producto = producto;
-        this.cantidad = cantidad;
-        this.precioUnitario = precioUnitario;
-    }
 
     public double getTotalDetalleVenta() {
         return cantidad*precioUnitario;
@@ -26,17 +20,9 @@ public class DetalleVenta {
     public Producto getProducto() {
         return producto;
     }
+
     public int getCantidad() {
         return cantidad;
-    }
-    @Override
-    public String toString() {
-        return "DetalleVenta {" +
-                "Producto = " + producto.getNombre() +
-                ", Precio = " + precioUnitario +
-                ", Cantidad = " + cantidad +
-                ", Total = " + getTotalDetalleVenta() +
-                '}';
     }
 
 

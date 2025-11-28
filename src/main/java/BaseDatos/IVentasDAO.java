@@ -9,9 +9,9 @@ import java.util.List;
 public interface IVentasDAO {
 
     Venta obtenerVentaPorID(int id);
-    List<Venta> obtenerVentasPorFecha(Date fecha); // Búsqueda por fecha (formato "YYYY-MM-DD")
-    void insertarVenta(Venta venta);//Insertar nueva venta
 
+    void insertarVenta(Venta venta);//Insertar nueva venta
+    List<Venta> obtenerVentas();
     Venta obtenerUltimaVenta();
 
 }

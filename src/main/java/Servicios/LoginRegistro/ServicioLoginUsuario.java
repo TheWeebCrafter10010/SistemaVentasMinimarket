@@ -1,7 +1,8 @@
-package Servicios;
+package Servicios.LoginRegistro;
 
 import BaseDatos.IUsuarioDAO;
 import Entidades.Usuario;
+import Servicios.Validacion.ServicioValidacionUsuario;
 
 public class ServicioLoginUsuario {
 
@@ -15,7 +16,7 @@ public class ServicioLoginUsuario {
 
     public boolean verificarFormatoValido(String email, String pwd) {
         //Verifica que el formato del email y la contraseña sean validos
-        //Evitando consultas innecesarias a la base de datos
+        //Evitando consultas innecesarias
         boolean emailValido = validacion.verificarFormatoEmail(email);
         boolean pwdValida = validacion.verificarPwd(pwd);
         return emailValido && pwdValida;

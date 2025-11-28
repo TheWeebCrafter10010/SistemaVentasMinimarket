@@ -4,8 +4,9 @@ import Entidades.Cliente;
 import Entidades.DetalleVenta;
 import Entidades.Producto;
 import Entidades.Venta;
-import Servicios.ValidarInput;
-import Servicios.VentasServicio;
+import Utils.DatosFormater;
+import Utils.ValidarInput;
+import Servicios.Ventas.VentasServicio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +31,15 @@ public class InterfazUsuario {
             switch(opcion){
                 case 1:
                     mostrarDatosCliente();
-                    pausa();
+                    ValidarInput.pausa();
                     break;
                 case 2:
                     mostrarProductos();
-                    pausa();
+                    ValidarInput.pausa();
                     break;
                 case 3:
                     comprarProducto();
-                    pausa();
+                    ValidarInput.pausa();
                     break;
                 case 4:
                     continuar = false;
@@ -65,42 +66,37 @@ public class InterfazUsuario {
 
     // ================= DATOS CLIENTE ==================
     private void mostrarDatosCliente(){
-        System.out.println("\n" + "=".repeat(50));
-        System.out.println("           DATOS DEL CLIENTE");
-        System.out.println("=".repeat(50));
-        System.out.printf("%-15s : %s%n", "ID", cliente.getId());
-        System.out.printf("%-15s : %s %s%n", "Cliente", cliente.getNombre(), cliente.getApellido());
-        System.out.printf("%-15s : %s%n", "Email", cliente.getEmail());
-        System.out.printf("%-15s : %s%n", "Teléfono", cliente.getTelefono());
-        System.out.printf("%-15s : %s%n", "Dirección", cliente.getDireccion());
-        System.out.println("=".repeat(50));
+        System.out.println(cliente.toString());
+        System.out.println("Desea ver sus compras realizadas? (s/n): ");
+        String respuesta = ValidarInput.leerSiNo();
+
+        if(respuesta.equalsIgnoreCase("s")){
+            DatosFormater.mostrarVentas(cliente.getCompras());
+            System.out.println("Ingrese la ID de una venta para ver detalles o 0 para salir: ");
+            int idVenta = ValidarInput.leerEntero();
+            if(idVenta != 0){
+                List<Venta> ventasCliente = cliente.getCompras();
+                Venta venta = ventasCliente.stream().filter(v -> v.getID() == idVenta).findFirst().orElse(null);
+                if(venta != null){
+                    System.out.println(venta);
+                }else{
+                    System.out.println("Venta no encontrada.");
+                }
+            }
+        }
     }
 
     // ================= LISTA PRODUCTOS ==================
     private void mostrarProductos() {
-
-        List<Producto> lista = new ArrayList<>(ventasServicio.obtenerProductos().values());
-
-        System.out.println("\n================ PRODUCTOS DISPONIBLES ================");
-        System.out.printf("%-4s %-25s %-12s %-8s%n", "ID", "PRODUCTO", "PRECIO", "STOCK");
-        System.out.println("-------------------------------------------------------");
-
-        for (Producto p : lista) {
-            System.out.printf("%-4d %-25s S/. %-8.2f %-8d%n",
-                    p.getId(),
-                    p.getNombre(),
-                    p.getPrecio(),
-                    p.getStock());
-        }
-
-        System.out.println("=======================================================");
+        DatosFormater.mostrarProductos(ventasServicio.obtenerProductos());
     }
 
     // ================= COMPRA ==================
     private void comprarProducto(){
 
-        List<DetalleVenta> detallesVenta = new ArrayList<>();
+        List<DetalleVenta> detallesVenta=  new ArrayList<>();;
         boolean continuar = true;
+
 
         System.out.println("\nIniciando compra...\n");
 
@@ -115,59 +111,37 @@ public class InterfazUsuario {
 
             if(producto == null){
                 System.out.println("Producto no encontrado.");
-                continue;
-            }
-
-            if(ventasServicio.verificarProductoEnLista(producto,detallesVenta)){
-                System.out.println("Producto ya fue agregado a su compra.");
-                continue;
-            }
-
-            System.out.print("Cantidad a comprar: ");
-            int cantidad = ValidarInput.leerEntero();
-
-            if(ventasServicio.agregarProductoAVenta(producto, cantidad, detallesVenta)){
-                System.out.println("Producto agregado correctamente.");
             }else{
-                System.out.println("Stock insuficiente.");
+
+                if(!ventasServicio.verificarProductoEnLista(producto,detallesVenta)){
+                    System.out.print("Cantidad a comprar: ");
+                    int cantidad = ValidarInput.leerEntero();
+                    boolean agregado = ventasServicio.agregarProductoAVenta(producto, cantidad, detallesVenta);
+
+                    if(agregado){
+                        System.out.println("Producto agregado correctamente.");
+                    }else{
+                        System.out.println("Stock insuficiente.");
+                    }
+
+                }else {
+                    System.out.println("Producto ya fue agregado a su compra.");
+                    continue;
+                }
             }
 
             System.out.print("¿Desea agregar otro producto? (s/n): ");
             String respuesta = ValidarInput.leerSiNo();
             continuar = !respuesta.equalsIgnoreCase("n");
+
+        }
+        if(!detallesVenta.isEmpty()){
+            Venta nuevaVenta = ventasServicio.generarVenta(detallesVenta, this.cliente);
+            System.out.println(nuevaVenta);
+        }else{
+            System.out.println("No se agregaron productos a la compra.");
         }
 
-        Venta nuevaVenta = ventasServicio.generarVenta(detallesVenta, cliente.getId());
-
-        mostrarTicket(nuevaVenta);
-    }
-
-    // ================= TICKET ==================
-    private void mostrarTicket(Venta venta) {
-
-        System.out.println("\n===================== BOLETA =====================");
-        System.out.println("Cliente: " + cliente.getNombre() + " " + cliente.getApellido());
-        System.out.println("Fecha: " + venta.getFechaConFormato());
-        System.out.println("--------------------------------------------------");
-
-        System.out.printf("%-20s %-8s %-8s%n", "PRODUCTO", "CANT", "SUBTOTAL");
-
-        for (DetalleVenta dv : venta.getProductosVendidos()) {
-            System.out.printf("%-20s %-8d S/. %-7.2f%n",
-                    dv.getProducto().getNombre(),
-                    dv.getCantidad(),
-                    dv.getTotalDetalleVenta());
-        }
-
-        System.out.println("--------------------------------------------------");
-        System.out.println("TOTAL A PAGAR: S/. " + venta.getTotal());
-        System.out.println("==================================================");
-    }
-
-    // ================= UTIL ==================
-    private void pausa(){
-        System.out.println("\nPresione ENTER para continuar...");
-        new java.util.Scanner(System.in).nextLine();
     }
 
     public void setCliente(Cliente cliente) {

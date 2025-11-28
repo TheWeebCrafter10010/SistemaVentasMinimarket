@@ -4,16 +4,21 @@ import BaseDatos.IUsuarioDAO;
 import Entidades.Admin;
 import Entidades.Cliente;
 import Entidades.Usuario;
+import Observadores.DaoObserver;
+import Observadores.DaoSubject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UsuariosDAO implements IUsuarioDAO {
+public class UsuariosDAO implements IUsuarioDAO, DaoSubject {
 
+    private List<DaoObserver> observers;
     private HashMap<String, Usuario> usuarios;
     private int contadorIDs = 1;
     public UsuariosDAO() {
+        observers = new ArrayList<>();
         this.usuarios = new HashMap<>();
         Admin admin1 = new Usuario.Builder()
                 .setId(contadorIDs)
@@ -91,6 +96,8 @@ public class UsuariosDAO implements IUsuarioDAO {
         cliente.setId(contadorIDs);
         usuarios.put(cliente.getEmail(), cliente);
         contadorIDs++;
+        String notificacion = "Nuevo cliente registrado - " + cliente.getId()+" | " + cliente.getEmail();
+        notifyObservers(notificacion);
         return usuarios.containsKey(cliente.getEmail());
     }
 
@@ -99,4 +106,20 @@ public class UsuariosDAO implements IUsuarioDAO {
         return usuarios;
     }
 
+    @Override
+    public void attach(DaoObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(DaoObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String mensaje) {
+        for( DaoObserver o : observers){
+            o.notificarCambio(mensaje);
+        }
+    }
 }
