@@ -1,7 +1,6 @@
-package Servicios;
+package Servicios.Validacion;
 
 import BaseDatos.IUsuarioDAO;
-import Entidades.Cliente;
 
 public class ServicioValidacionUsuario {
 
@@ -46,10 +45,4 @@ public class ServicioValidacionUsuario {
         return !clienteExistente;
     }
 
-    public void registrarNuevoCliente(Cliente cliente) {
-        //Registrar un nuevo cliente en la base de datos
-        //Usar despues de haber hecho todas las validaciones necesarias
-
-        clienteDAO.insertarCliente(cliente);
-    }
 }

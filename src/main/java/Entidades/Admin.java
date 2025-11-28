@@ -1,37 +1,30 @@
 
 package Entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Admin extends Usuario{
     
-    private List<String> historialAcciones;
+    private List<String> notificaciones= new ArrayList<>();
 
     public Admin(Builder builder) {
         super(builder);
     }
     
-    public void setHistorialAcciones(List <String>historial){
-        this.historialAcciones = historial;
+    public void addNotificacion(String notificacion) {
+
+        this.notificaciones.add(notificacion);
     }
     
-    public List<String> getHistorialAcciones(){
+    public List<String> getNotificaciones(){
         
-        return this.historialAcciones;
-    }
-    
-    public void addAccion(String accion, String fecha){
-        StringBuilder nuevaAccion = new StringBuilder();
-        nuevaAccion.append(this.getNombre()+" ");
-        nuevaAccion.append(accion);
-        nuevaAccion.append("-"+fecha);
-        historialAcciones.add(nuevaAccion.toString());
-        
+        return this.notificaciones;
     }
 
     @Override
     public String toString() {
-        return "Admin"+super.toString()+"\n{" + "historialAcciones=" + historialAcciones.toString() + '}';
+        return "Admin"+super.toString()+"\n{" + "historialAcciones=" + notificaciones.toString() + '}';
     }
     
 
