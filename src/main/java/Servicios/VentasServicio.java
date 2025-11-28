@@ -1,6 +1,5 @@
 package Servicios;
 
-import BaseDatos.ColumnaProducto;
 import BaseDatos.IProductosDAO;
 import BaseDatos.IVentasDAO;
 import Entidades.DetalleVenta;

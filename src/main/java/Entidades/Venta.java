@@ -54,6 +54,10 @@ public class Venta {
     public LocalDateTime getFecha() {
         return fecha;
     }
+    public String getFechaConFormato() {
+    return fechaConFormato;
+}
+
 
     public List<DetalleVenta> getProductosVendidos() {
         return productosVendidos;

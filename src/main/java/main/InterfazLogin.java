@@ -2,11 +2,13 @@ package main;
 
 import DataTransferObjects.ValidacionRegistro;
 import Entidades.*;
-;
 import Servicios.ServicioLoginUsuario;
 import Servicios.ServicioRegistroClienteFacade;
 import Servicios.ValidarInput;
 import Servicios.VentasServicio;
+import BaseDatos.IProductosDAO;
+import BaseDatos.IUsuarioDAO;
+import BaseDatos.IVentasDAO;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,12 +21,24 @@ public class InterfazLogin {
     Scanner sc = new Scanner(System.in);
 
     private InterfazUsuario interfazUsuario;
+    private IProductosDAO productosDAO;
+private IUsuarioDAO usuarioDAO;
+private IVentasDAO ventasDAO;
 
-    public InterfazLogin(VentasServicio ventasServicio, ServicioRegistroClienteFacade servicioRegistroCliente, ServicioLoginUsuario servicioLoginUsuario) {
-        this.servicioRegistroCliente = servicioRegistroCliente;
-        this.ventasServicio = ventasServicio;
-        this.servicioLoginUsuario = servicioLoginUsuario;
-    }
+public InterfazLogin(VentasServicio ventasServicio,
+                     ServicioRegistroClienteFacade servicioRegistroCliente,
+                     ServicioLoginUsuario servicioLoginUsuario,
+                     IProductosDAO productosDAO,
+                     IUsuarioDAO usuarioDAO,
+                     IVentasDAO ventasDAO) {
+
+    this.servicioRegistroCliente = servicioRegistroCliente;
+    this.ventasServicio = ventasServicio;
+    this.servicioLoginUsuario = servicioLoginUsuario;
+    this.productosDAO = productosDAO;
+    this.usuarioDAO = usuarioDAO;
+    this.ventasDAO = ventasDAO;
+}
 
     public void iniciar(){
         boolean valido = true;
@@ -68,8 +82,18 @@ public class InterfazLogin {
             if(user != null){
                 System.out.println("Login exitoso");
                 if(user instanceof Admin){
-                    System.out.println("Bienvenido Admin "+user.getNombre()+"!");
-                }else{
+    System.out.println("Bienvenido Admin "+user.getNombre()+"!");
+    // Abrir interfaz admin
+    InterfazAdmin adminUI = new InterfazAdmin(
+        productosDAO,
+        usuarioDAO,
+        ventasDAO
+);
+
+    // Mejor: pasar las instancias creadas en SistemaContexto en vez de crear nuevas.
+    // Si no tienes getter, modifica SistemaContexto para pasar las mismas instancias.
+    adminUI.start();
+} else {
                     System.out.println("Bienvenido Cliente "+user.getNombre()+"!");
                     if(interfazUsuario==null){
                         interfazUsuario = new InterfazUsuario(ventasServicio);
