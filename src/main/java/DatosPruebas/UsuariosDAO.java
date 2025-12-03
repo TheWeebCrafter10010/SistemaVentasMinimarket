@@ -6,7 +6,6 @@ import Entidades.Cliente;
 import Entidades.Usuario;
 import Observadores.DaoObserver;
 import Observadores.DaoSubject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -33,11 +33,11 @@ public class InterfazAdmin {
             System.out.println("\n======================================");
             System.out.println("          PANEL DE ADMIN");
             System.out.println("======================================");
-            System.out.println("1. 👥 Ver clientes");
-            System.out.println("2. 📦 Gestión de productos");
-            System.out.println("3. 💰 Ver ventas");
-            System.out.println("4. \uD83D\uDD14 Ver notificaciones");
-            System.out.println("5. 🚪 Cerrar sesión");
+            System.out.println("1. Ver clientes");
+            System.out.println("2. Gestión de productos");
+            System.out.println("3. Ver ventas");
+            System.out.println("4. Ver notificaciones");
+            System.out.println("5. Cerrar sesión");
             System.out.println("======================================");
             System.out.print("Seleccione una opción: ");
 
